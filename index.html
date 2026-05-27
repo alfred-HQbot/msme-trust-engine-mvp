@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSME Trust Engine (MVP Demo)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border-top-color: #3498db;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-gray-800 p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Vendor Trust Dashboard</h1>
+            <p class="mt-2 text-gray-600">B2B MSME Credit Risk Analyzer</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+            <label for="gstin" class="block text-sm font-medium text-gray-700 mb-2">Enter Buyer GSTIN</label>
+            <div class="flex gap-4">
+                <input type="text" id="gstin" placeholder="e.g. 06AAAAA0000A1Z5" 
+                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase font-mono text-lg"
+                    maxlength="15">
+                <button onclick="runAnalysis()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors">
+                    Analyze Risk
+                </button>
+            </div>
+            <div class="mt-4 flex gap-2 text-sm">
+                <span class="text-gray-500">Test GSTINs:</span>
+                <button onclick="document.getElementById('gstin').value='07AABCU9603R1ZM'" class="text-green-600 underline">Green (Safe)</button>
+                <button onclick="document.getElementById('gstin').value='27BBMPS5678B1ZA'" class="text-yellow-600 underline">Yellow (Caution)</button>
+                <button onclick="document.getElementById('gstin').value='06DELPR1234A1Z5'" class="text-red-600 underline">Red (Danger)</button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="hidden text-center py-12">
+            <div class="inline-block w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+            <p class="mt-4 text-gray-600 font-medium animate-pulse" id="loading-text">Connecting to GSTN...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="hidden space-y-6">
+            <!-- Top Card: Score & Recommendation -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div id="status-header" class="p-6 text-white text-center">
+                    <h2 class="text-5xl font-black mb-2" id="score">--</h2>
+                    <p class="text-xl font-bold uppercase tracking-widest" id="recommendation">--</p>
+                </div>
+                <div class="p-6 bg-gray-50 border-t border-gray-100">
+                    <p class="text-gray-700 font-medium text-center" id="summary-text">--</p>
+                </div>
+            </div>
+
+            <!-- Data Modules Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- GST Data -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-400">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        GST Compliance
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex justify-between border-b pb-1">
+                            <span class="text-gray-500">Status:</span>
+                            <span id="gst-status" class="font-bold">--</span>
+                        </li>
+                        <li class="flex justify-between border-b pb-1">
+                            <span class="text-gray-500">Entity Type:</span>
+                            <span id="gst-type" class="font-medium">--</span>
+                        </li>
+                        <li class="flex justify-between border-b pb-1">
+                            <span class="text-gray-500">GSTR-3B Filings (L6M):</span>
+                            <span id="gst-filings" class="font-medium">--</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-500">Vintage:</span>
+                            <span id="gst-vintage" class="font-medium">--</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- MCA Form 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-indigo-400">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m3-4h1m-1 4h1m-5 8h8"></path></svg>
+                        MCA Form 1 (Corporate Defaults)
+                    </h3>
+                    <div id="mca-content" class="text-sm">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- MSME Samadhaan -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-400">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                        MSME Samadhaan Portal
+                    </h3>
+                    <div id="samadhaan-content" class="text-sm">
+                         <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Udyam Data -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-green-400">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        Udyam Registration
+                    </h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex justify-between border-b pb-1">
+                            <span class="text-gray-500">Status:</span>
+                            <span id="udyam-status" class="font-medium">--</span>
+                        </li>
+                        <li class="flex justify-between border-b pb-1">
+                            <span class="text-gray-500">Enterprise Type:</span>
+                            <span id="udyam-type" class="font-medium">--</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-500">Major Activity:</span>
+                            <span id="udyam-activity" class="font-medium text-right w-1/2">--</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // NOTE: Real public open APIs do not exist for GST/MCA without paid API keys (like Karza/Setu).
+        // This demo structurally simulates the EXACT responses you would get from those aggregators.
+
+        async function runAnalysis() {
+            const gstin = document.getElementById('gstin').value.trim().toUpperCase();
+            if(gstin.length !== 15) {
+                alert("Please enter a valid 15-character GSTIN.");
+                return;
+            }
+
+            // UI State: Loading
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+            
+            // Simulating API latency and scrapers
+            await updateLoadingText("Pinging GSTN API...");
+            const gstData = await mockFetchGSTIN(gstin);
+            
+            await updateLoadingText("Scraping MCA Database...");
+            const mcaData = await mockFetchMCA(gstin, gstData.entityType);
+            
+            await updateLoadingText("Querying MSME Samadhaan...");
+            const samadhaanData = await mockFetchSamadhaan(gstin);
+
+            await updateLoadingText("Fetching Udyam APIs...");
+            const udyamData = await mockFetchUdyam(gstin);
+
+            // Compute Score
+            const analysis = calculateScore(gstData, mcaData, samadhaanData);
+
+            // Update UI
+            renderResults(gstData, mcaData, samadhaanData, udyamData, analysis);
+            
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        function updateLoadingText(text) {
+            document.getElementById('loading-text').innerText = text;
+            return new Promise(resolve => setTimeout(resolve, 800));
+        }
+
+        // --- THE ALGORITHM ---
+        function calculateScore(gst, mca, sam) {
+            let score = 100;
+            let deductions = [];
+
+            // 1. Hard Stops (Kill Switches)
+            if (gst.status !== "Active") {
+                return { score: 0, label: "REJECT", color: "bg-red-600", text: "GSTIN is Suspended/Cancelled. DO NOT DO BUSINESS. Illegal to claim ITC." };
+            }
+
+            // 2. GST Compliance Risk (Cash flow indicator)
+            const missedFilings = 6 - gst.gstr3bLast6Months;
+            if (missedFilings > 0) {
+                score -= (missedFilings * 15);
+                deductions.push(`Missed ${missedFilings} GST filings (Severe cash crunch indication).`);
+            }
+
+            if (gst.vintageMonths < 12) {
+                score -= 15;
+                deductions.push("Business is less than 1 year old (Unseasoned).");
+            }
+
+            // 3. Corporate Default Risk (MCA Form 1)
+            if (mca.applicable && mca.defaultsFound > 0) {
+                score -= 30;
+                deductions.push(`Reported ${mca.defaultsFound} unpaid MSME vendors on MCA Form 1 (₹${mca.totalOwed.toLocaleString()}).`);
+            }
+
+            // 4. Litigation Risk (Samadhaan)
+            if (sam.activeCases > 0) {
+                score -= 40;
+                deductions.push(`Currently fighting ${sam.activeCases} unpaid vendors in government court!`);
+            }
+
+            // Cap at 0
+            score = Math.max(0, score);
+
+            // Verdict
+            if (score >= 80) return { score, label: "APPROVE (STANDARD CREDIT)", color: "bg-green-500", text: "Low risk. Healthy cash flow and no reported defaults." };
+            if (score >= 50) return { score, label: "CAUTION (CASH ONLY)", color: "bg-yellow-500", text: "Moderate risk. " + deductions[0] + " Recommend advance payment." };
+            return { score, label: "HIGH RISK (DO NOT EXTEND CREDIT)", color: "bg-red-600", text: "Critical risk factors found: " + deductions.join(" ") };
+        }
+
+        // --- MOCK API GATEWAYS ---
+        // In reality, these would be: await fetch(`https://api.karza.in/v2/gstin?gstin=${gstin}`, {headers: {'x-karza-key': 'YOUR_KEY'}})
+
+        async function mockFetchGSTIN(gstin) {
+            const isCompany = gstin.charAt(5) === 'C'; // 6th char of GSTIN indicates PAN status (C=Company, P=Person)
+            
+            // Hardcoded test cases
+            if(gstin === '07AABCU9603R1ZM') return { status: 'Active', entityType: 'Private Limited Company', gstr3bLast6Months: 6, vintageMonths: 60 };
+            if(gstin === '27BBMPS5678B1ZA') return { status: 'Active', entityType: 'Proprietorship', gstr3bLast6Months: 4, vintageMonths: 24 };
+            if(gstin === '06DELPR1234A1Z5') return { status: 'Suspended', entityType: 'Proprietorship', gstr3bLast6Months: 1, vintageMonths: 8 };
+
+            // Default random fallback
+            return {
+                status: 'Active',
+                entityType: isCompany ? 'Private Limited Company' : 'Proprietorship',
+                gstr3bLast6Months: Math.floor(Math.random() * 3) + 4, // 4 to 6
+                vintageMonths: 36
+            };
+        }
+
+        async function mockFetchMCA(gstin, entityType) {
+            if (entityType === 'Proprietorship' || entityType === 'Partnership') {
+                return { applicable: false };
+            }
+            if(gstin === '07AABCU9603R1ZM') return { applicable: true, defaultsFound: 0, totalOwed: 0 };
+            
+            // For other companies, simulate bad data
+            return { applicable: true, defaultsFound: 3, totalOwed: 1450000 };
+        }
+
+        async function mockFetchSamadhaan(gstin) {
+            if(gstin === '06DELPR1234A1Z5') return { activeCases: 2, claimAmount: 850000, lastCaseDate: '2023-11-15' };
+            if(gstin === '27BBMPS5678B1ZA') return { activeCases: 0, claimAmount: 0 };
+            return { activeCases: 0, claimAmount: 0 };
+        }
+
+        async function mockFetchUdyam(gstin) {
+            return {
+                status: "Active",
+                type: "Micro",
+                activity: "Manufacture of parts and accessories for motor vehicles"
+            };
+        }
+
+        // --- RENDER LOGIC ---
+        function renderResults(gst, mca, sam, udyam, analysis) {
+            // Header
+            const header = document.getElementById('status-header');
+            header.className = `p-6 text-white text-center ${analysis.color}`;
+            document.getElementById('score').innerText = analysis.score;
+            document.getElementById('recommendation').innerText = analysis.label;
+            document.getElementById('summary-text').innerText = analysis.text;
+
+            // GST
+            document.getElementById('gst-status').innerText = gst.status;
+            document.getElementById('gst-status').className = gst.status === 'Active' ? 'font-bold text-green-600' : 'font-bold text-red-600';
+            document.getElementById('gst-type').innerText = gst.entityType;
+            document.getElementById('gst-filings').innerText = `${gst.gstr3bLast6Months} / 6`;
+            document.getElementById('gst-filings').className = gst.gstr3bLast6Months === 6 ? 'font-medium text-green-600' : 'font-medium text-red-600';
+            document.getElementById('gst-vintage').innerText = `${Math.floor(gst.vintageMonths/12)} Years, ${gst.vintageMonths%12} Mos`;
+
+            // MCA
+            const mcaDiv = document.getElementById('mca-content');
+            if (!mca.applicable) {
+                mcaDiv.innerHTML = `<p class="text-gray-500 italic">Not applicable. Buyer is not a registered corporate entity (Proprietorship/Partnership), so they are immune to MCA Form 1 rules.</p>`;
+            } else if (mca.defaultsFound === 0) {
+                mcaDiv.innerHTML = `<p class="text-green-600 font-bold">✓ Clean</p><p class="text-gray-600 mt-1">No delayed payments reported to the Ministry of Corporate Affairs.</p>`;
+            } else {
+                mcaDiv.innerHTML = `<p class="text-red-600 font-bold">⚠ Defaults Found: ${mca.defaultsFound}</p>
+                                    <p class="text-gray-800 mt-1">Total Owed: <span class="font-bold">₹${mca.totalOwed.toLocaleString()}</span></p>
+                                    <p class="text-red-500 text-xs mt-2">This company legally confessed to the govt that they owe other vendors money for >45 days.</p>`;
+            }
+
+            // Samadhaan
+            const samDiv = document.getElementById('samadhaan-content');
+            if (sam.activeCases === 0) {
+                samDiv.innerHTML = `<p class="text-green-600 font-bold">✓ No Active Disputes</p><p class="text-gray-600 mt-1">No vendors have filed complaints against this GSTIN in the facilitation council.</p>`;
+            } else {
+                samDiv.innerHTML = `<p class="text-red-600 font-bold">⚠ Active Cases: ${sam.activeCases}</p>
+                                    <p class="text-gray-800 mt-1">Disputed Amount: <span class="font-bold">₹${sam.claimAmount.toLocaleString()}</span></p>
+                                    <p class="text-red-500 text-xs mt-2">Latest case filed on: ${sam.lastCaseDate}</p>`;
+            }
+
+            // Udyam
+            document.getElementById('udyam-status').innerText = udyam.status;
+            document.getElementById('udyam-type').innerText = udyam.type;
+            document.getElementById('udyam-activity').innerText = udyam.activity;
+        }
+    </script>
+</body>
+</html>
