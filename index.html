@@ -1,28 +1,30 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credence | Risk Intelligence</title>
+    <title>Credence | Risk Intelligence Ledger</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Importing Cormorant Garamond (Elite Serif) and Plus Jakarta Sans (Premium Geometric Sans) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-                        mono: ['SF Mono', 'ui-monospace', 'Menlo', 'monospace']
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                        mono: ['Courier', 'monospace']
                     },
                     colors: {
-                        void: '#030303',
-                        obsidian: '#09090b',
-                        slateCard: '#121214',
-                        appleBlue: '#0071e3',
-                        appleBlueHover: '#147ce5',
+                        bone: '#FBFBFA',
+                        charcoal: '#1A1C1A',
+                        linen: '#F4F2EE',
+                        sage: '#2D4A3E',
+                        ochre: '#A2684B',
+                        crimson: '#8C2E2E'
                     }
                 }
             }
@@ -30,160 +32,106 @@
     </script>
     <style>
         body {
-            background-color: #030303;
-            color: #f4f4f5;
+            background-color: #FBFBFA;
+            color: #1A1C1A;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
         }
-        
-        /* Premium custom scrollbar */
+
+        /* Subtle, physical-style paper shadow */
+        .paper-shadow {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 
+                        0 10px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Standard custom scrollbar for editorial look */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: #030303;
+            background: #FBFBFA;
         }
         ::-webkit-scrollbar-thumb {
-            background: #1c1c1e;
+            background: #E4E2DE;
             border-radius: 980px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2c2c2e;
-        }
 
-        /* Ambient Upper Light Spotlight */
-        .upper-light {
-            background: radial-gradient(circle at 50% 0%, rgba(0, 113, 227, 0.15) 0%, rgba(99, 102, 241, 0.05) 30%, rgba(3, 3, 3, 0) 70%);
-            pointer-events: none;
+        /* Delicate typing dot animation for editorial loader */
+        .dot-blink {
+            animation: blink 1.4s infinite both;
         }
-
-        /* Ambient Card Highlights */
-        .glow-card {
-            position: relative;
-            background: rgba(18, 18, 20, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .glow-card:hover {
-            border-color: rgba(0, 113, 227, 0.3);
-            background: rgba(18, 18, 20, 0.6);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px -12px rgba(0, 113, 227, 0.15);
-        }
-
-        /* Circular Progress Dasharray Animation */
-        .progress-ring__circle {
-            transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
-        /* Shimmer Loading Animation */
-        .skeleton-shimmer {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
-            background-size: 200% 100%;
-            animation: loading-shimmer 1.5s infinite;
-        }
-        @keyframes loading-shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* Pulsing Spotlight */
-        @keyframes subtle-pulse {
-            0%, 100% { opacity: 0.9; transform: scale(1); }
-            50% { opacity: 1.1; transform: scale(1.02); }
-        }
-        .pulse-light {
-            animation: subtle-pulse 10s infinite ease-in-out;
+        .dot-blink:nth-child(2) { animation-delay: .2s; }
+        .dot-blink:nth-child(3) { animation-delay: .4s; }
+        @keyframes blink {
+            0% { opacity: .2; }
+            20% { opacity: 1; }
+            100% { opacity: .2; }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans selection:bg-appleBlue selection:text-white">
+<body class="min-h-screen flex flex-col font-sans px-4 sm:px-8 py-8 selection:bg-linen selection:text-charcoal">
 
-    <!-- Top Glow -->
-    <div class="absolute top-0 left-0 right-0 h-[600px] upper-light pulse-light z-0"></div>
-
-    <!-- Navigation Header -->
-    <header class="sticky top-0 z-50 bg-void/60 backdrop-blur-xl border-b border-white/[0.04] px-6 sm:px-12 py-3.5 flex items-center justify-between transition-all">
-        <div class="flex items-center gap-2.5 cursor-pointer" onclick="showDashboard()">
-            <div class="w-5 h-5 rounded bg-gradient-to-tr from-appleBlue to-indigo-500 shadow-md flex items-center justify-center">
-                <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
-            </div>
-            <span class="font-bold text-base tracking-tight text-white select-none">Credence<span class="text-appleBlue">.</span></span>
+    <!-- Header Navigation (Classic Editorial Letterhead Style) -->
+    <header class="max-w-4xl mx-auto w-full border-b border-charcoal/10 pb-6 mb-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showDashboard()">
+            <span class="font-serif text-2xl font-bold tracking-tight text-charcoal">Credence<span class="text-sage">.</span></span>
+            <span class="text-[10px] tracking-widest uppercase font-semibold text-charcoal/40 border border-charcoal/10 px-2 py-0.5 rounded">Risk Ledger</span>
         </div>
-        
-        <div class="flex items-center gap-4">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-appleBlue/10 text-appleBlue border border-appleBlue/20 tracking-wider uppercase">
-                Enterprise Sandbox
-            </span>
-            <div class="h-4 w-px bg-white/[0.08]"></div>
-            <div class="flex items-center gap-2.5">
-                <div class="w-7 h-7 rounded-full bg-gradient-to-b from-zinc-700 to-zinc-900 border border-white/10 flex items-center justify-center text-xs font-semibold text-zinc-300 select-none">
-                    VC
-                </div>
-                <span class="text-xs font-medium text-zinc-400 hidden sm:inline">Sir Vansh</span>
-            </div>
+        <div class="flex items-center gap-6 text-xs text-charcoal/60">
+            <span class="font-light tracking-wide">Enterprise Sandbox Env</span>
+            <div class="w-1.5 h-1.5 rounded-full bg-sage"></div>
+            <span class="font-medium tracking-tight">Vansh Choudhary</span>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col relative z-10 px-6 sm:px-12 py-10 sm:py-16 max-w-7xl mx-auto w-full transition-all duration-500">
+    <!-- Main Content Container -->
+    <main class="flex-1 flex flex-col max-w-4xl mx-auto w-full">
 
-        <!-- STEP 1: Search & Spotlight Presets (Dashboard View) -->
-        <section id="dashboard-view" class="flex-1 flex flex-col justify-center max-w-3xl mx-auto w-full py-12 transition-all duration-500">
+        <!-- STAGE 1: Search & Simulated Presets (Minimalist Inquiry Ledger) -->
+        <section id="dashboard-view" class="flex-1 flex flex-col justify-center py-6 sm:py-12 transition-all duration-300">
             
-            <!-- Hero Statement -->
-            <div class="text-center mb-10 space-y-3.5">
-                <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.1] select-none">
-                    Verify MSME Credit Trust
+            <!-- Hero Section -->
+            <div class="text-center mb-12 space-y-4">
+                <h1 class="font-serif text-4xl sm:text-5xl font-light italic tracking-tight text-charcoal leading-tight">
+                    Verify Trade Credit Integrity
                 </h1>
-                <p class="text-zinc-400 text-sm sm:text-base max-w-xl mx-auto font-light">
-                    Real-time statutory tax filings, MCA Sec 43B(h) payment defaults, and active MSEFC litigation analytics for Indian automotive suppliers.
+                <p class="text-charcoal/60 text-sm max-w-lg mx-auto font-light leading-relaxed">
+                    Direct access to registered delayed payments, MCA Sec 43B(h) statutory defaults, and active MSEFC arbitration records.
                 </p>
             </div>
 
-            <!-- Spotlight Search Capsule -->
-            <div class="relative group max-w-2xl mx-auto w-full mb-8">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-appleBlue to-indigo-500 rounded-full blur opacity-15 group-focus-within:opacity-40 transition-all duration-500"></div>
-                <div class="relative flex items-center bg-white/[0.03] hover:bg-white/[0.05] focus-within:bg-void border border-white/[0.08] focus-within:border-appleBlue/60 rounded-full px-5 py-4 transition-all duration-300">
-                    <svg class="w-5 h-5 text-zinc-500 group-focus-within:text-appleBlue transition-colors duration-300 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <input type="text" id="dashboard-search" placeholder="Enter Supplier GSTIN (e.g. 07AABCU9603R1ZM)..." class="w-full bg-transparent border-none pl-3.5 pr-2 py-0 text-white placeholder-zinc-500 text-sm sm:text-base focus:outline-none focus:ring-0 font-mono tracking-wider" maxlength="15" onkeypress="handleEnter(event)">
-                    <button onclick="triggerAnalysisFromInput()" class="bg-appleBlue hover:bg-appleBlueHover text-white px-5 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 flex-shrink-0 flex items-center gap-1 shadow-md hover:shadow-appleBlue/20">
-                        Analyze
+            <!-- Crisp Search Form -->
+            <div class="max-w-xl mx-auto w-full mb-10">
+                <div class="bg-linen border border-charcoal/15 rounded-lg flex items-center p-1.5 transition-all duration-300 focus-within:border-charcoal focus-within:ring-1 focus-within:ring-charcoal/10">
+                    <input type="text" id="dashboard-search" placeholder="Enter Supplier GSTIN (e.g. 07AABCU9603R1ZM)" class="w-full bg-transparent border-none px-4 py-3 text-charcoal placeholder-charcoal/40 text-sm focus:outline-none font-mono tracking-wider" maxlength="15" onkeypress="handleEnter(event)">
+                    <button onclick="triggerAnalysisFromInput()" class="bg-charcoal hover:bg-charcoal/90 text-bone px-6 py-3 rounded text-xs font-semibold tracking-wide transition-all duration-300">
+                        Inquire
                     </button>
                 </div>
             </div>
 
-            <!-- Preset Scenarios (Interactive Pills) -->
+            <!-- Preset Scenarios (Elegant Text Links) -->
             <div class="space-y-4 text-center">
-                <span class="text-xs font-semibold text-zinc-500 tracking-wider uppercase select-none">Simulate Sandbox Scenarios</span>
-                <div class="flex flex-wrap items-center justify-center gap-3">
+                <span class="text-[10px] font-semibold text-charcoal/40 tracking-widest uppercase block">Simulate Audit Profiles</span>
+                <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
                     
-                    <button onclick="runAnalysis('07AABCU9603R1ZM')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.05] hover:border-emerald-500/30 text-xs text-zinc-300 transition-all duration-300 group">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)] group-hover:scale-110 transition-transform"></span>
-                        <span class="font-medium text-white">Apex Auto Components</span>
-                        <span class="text-[10px] text-zinc-500 font-mono">07AABC...</span>
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">Prime</span>
+                    <button onclick="runAnalysis('07AABCU9603R1ZM')" class="group text-left text-xs transition-all duration-200">
+                        <span class="font-medium text-charcoal/80 group-hover:text-charcoal underline underline-offset-4 decoration-charcoal/20 group-hover:decoration-charcoal">Apex Auto Components</span>
+                        <span class="text-[10px] text-charcoal/40 font-mono block mt-0.5">07AABC... (Prime Case)</span>
                     </button>
 
-                    <button onclick="runAnalysis('27BBMPS5678B1ZA')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.05] hover:border-amber-500/30 text-xs text-zinc-300 transition-all duration-300 group">
-                        <span class="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)] group-hover:scale-110 transition-transform"></span>
-                        <span class="font-medium text-white">Rahul Metals & Stampings</span>
-                        <span class="text-[10px] text-zinc-500 font-mono">27BBMP...</span>
-                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20 font-bold">Sub-Prime</span>
+                    <span class="text-charcoal/20 hidden sm:inline">|</span>
+
+                    <button onclick="runAnalysis('27BBMPS5678B1ZA')" class="group text-left text-xs transition-all duration-200">
+                        <span class="font-medium text-charcoal/80 group-hover:text-charcoal underline underline-offset-4 decoration-charcoal/20 group-hover:decoration-charcoal">Rahul Metals & Stampings</span>
+                        <span class="text-[10px] text-charcoal/40 font-mono block mt-0.5">27BBMP... (Sub-Prime Case)</span>
                     </button>
 
-                    <button onclick="runAnalysis('06DELPR1234A1Z5')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.05] hover:border-rose-500/30 text-xs text-zinc-300 transition-all duration-300 group">
-                        <span class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(239,68,68,0.4)] group-hover:scale-110 transition-transform"></span>
-                        <span class="font-medium text-white">Global Fasteners</span>
-                        <span class="text-[10px] text-zinc-500 font-mono">06DELP...</span>
-                        <span class="text-[10px] bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/20 font-bold">High Risk</span>
+                    <span class="text-charcoal/20 hidden sm:inline">|</span>
+
+                    <button onclick="runAnalysis('06DELPR1234A1Z5')" class="group text-left text-xs transition-all duration-200">
+                        <span class="font-medium text-charcoal/80 group-hover:text-charcoal underline underline-offset-4 decoration-charcoal/20 group-hover:decoration-charcoal">Global Fasteners & Polymers</span>
+                        <span class="text-[10px] text-charcoal/40 font-mono block mt-0.5">06DELP... (High Risk Case)</span>
                     </button>
 
                 </div>
@@ -191,184 +139,162 @@
 
         </section>
 
-        <!-- STEP 2: Pure Kinetic Shimmer (Loader View) -->
-        <section id="loader-view" class="hidden flex-1 flex flex-col items-center justify-center py-20 transition-all duration-500">
-            <div class="relative w-16 h-16 mb-6">
-                <!-- Glowing rotating circles for a true Apple hardware startup loading vibe -->
-                <div class="absolute inset-0 rounded-full border-2 border-white/[0.05]"></div>
-                <div class="absolute inset-0 rounded-full border-2 border-t-appleBlue border-r-transparent border-b-transparent border-l-transparent animate-spin duration-1000"></div>
-                <div class="absolute inset-2 rounded-full border-2 border-zinc-800"></div>
-                <div class="absolute inset-2 rounded-full border-2 border-b-indigo-500 border-t-transparent border-r-transparent border-l-transparent animate-spin duration-700 reverse"></div>
-            </div>
-            <div class="text-center space-y-1.5">
-                <p class="text-sm font-semibold tracking-wider uppercase text-zinc-400">Verifying Ledger Exhaust</p>
-                <p class="text-xs text-zinc-500 font-mono">Fetching GSTN filings, scraping MSEFC facilitation database...</p>
+        <!-- STAGE 2: Elegant Text-Based Loader (Clean Editorial Loader) -->
+        <section id="loader-view" class="hidden flex-1 flex flex-col items-center justify-center py-24 transition-all duration-300">
+            <div class="flex flex-col items-center space-y-4">
+                <div class="h-px w-24 bg-charcoal/25 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-charcoal w-1/2 rounded animate-pulse"></div>
+                </div>
+                <div class="text-center space-y-1">
+                    <p class="text-xs font-semibold tracking-wider uppercase text-charcoal/80 select-none">Retrieving Ledger Integrity</p>
+                    <p class="text-[11px] text-charcoal/40 font-mono">
+                        Scraping MSME Samadhaan <span class="dot-blink">.</span><span class="dot-blink">.</span><span class="dot-blink">.</span>
+                    </p>
+                </div>
             </div>
         </section>
 
-        <!-- STEP 3: Bento Grid Report (Results View) -->
-        <section id="report-view" class="hidden flex-1 flex flex-col space-y-8 opacity-0 translate-y-4 transition-all duration-700">
+        <!-- STAGE 3: Pristine Credit Advisory Certificate (The Beautiful Result) -->
+        <section id="report-view" class="hidden flex-1 flex flex-col space-y-10 opacity-0 transition-all duration-500">
             
-            <!-- Dashboard Return & Action Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
-                <div class="space-y-1.5">
-                    <button onclick="showDashboard()" class="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors group mb-1.5 select-none">
-                        <svg class="w-3.5 h-3.5 transform group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <!-- Dashboard Controls -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-charcoal/10 pb-6">
+                <div>
+                    <button onclick="showDashboard()" class="inline-flex items-center gap-1.5 text-xs text-charcoal/50 hover:text-charcoal transition-colors group mb-3 select-none">
+                        <svg class="w-3 h-3 transform group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
                         </svg>
-                        Back to Search
+                        Return to Registry
                     </button>
-                    <div class="flex items-center gap-3">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-white" id="company-name">--</h2>
-                        <span id="badge-tier" class="px-2.5 py-0.5 rounded-full text-xs font-semibold border uppercase">
-                            --
-                        </span>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-3 text-xs text-zinc-500">
-                        <span class="font-mono bg-white/[0.03] border border-white/[0.06] px-2 py-0.5 rounded tracking-wide text-zinc-300" id="report-gstin">--</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-semibold tracking-tight text-charcoal" id="company-name">--</h2>
+                    <div class="flex flex-wrap items-center gap-3 text-xs text-charcoal/50 mt-1">
+                        <span class="font-mono bg-linen px-2 py-0.5 rounded border border-charcoal/10 text-charcoal/80" id="report-gstin">--</span>
                         <span>•</span>
                         <span id="report-date" class="font-light">--</span>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4.5 py-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-full text-xs font-semibold text-white transition-all duration-300 shadow-sm">
-                        <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
-                        Export Report
-                    </button>
-                    <button class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4.5 py-2 bg-appleBlue hover:bg-appleBlueHover rounded-full text-xs font-semibold text-white transition-all duration-300 shadow-md shadow-appleBlue/15">
-                        Establish Credit
+                    <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 px-4.5 py-2.5 bg-linen hover:bg-charcoal/5 border border-charcoal/15 rounded text-xs font-semibold text-charcoal transition-all duration-300">
+                        Print Certificate
                     </button>
                 </div>
             </div>
 
-            <!-- Bento Box Complex Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- The Pure Design Paper Document Sheet -->
+            <div class="bg-bone border border-charcoal/15 rounded-lg p-6 sm:p-10 paper-shadow space-y-10">
                 
-                <!-- BENTO CARD 1: Large Immersive Credence Score Ring -->
-                <div class="glow-card rounded-3xl p-6.5 flex flex-col items-center justify-center text-center col-span-1 min-h-[300px]">
-                    <span class="text-xs font-semibold text-zinc-500 tracking-wider uppercase mb-5 select-none">Credence Score</span>
+                <!-- Internal Letterhead Metadata -->
+                <div class="flex justify-between border-b border-charcoal/10 pb-4 text-[10px] font-semibold text-charcoal/40 uppercase tracking-widest">
+                    <span>Statutory Compliance Check</span>
+                    <span id="advisory-serial">Serial: CR-2026-X</span>
+                </div>
+
+                <!-- Primary Advisory Layout -->
+                <div class="flex flex-col md:flex-row gap-8 items-start">
                     
-                    <div class="relative flex items-center justify-center mb-4">
-                        <!-- SVG Circular Gauge -->
-                        <svg class="w-40 h-40">
-                            <circle class="text-white/[0.03]" stroke-width="8" stroke="currentColor" fill="transparent" r="70" cx="80" cy="80" />
-                            <circle class="progress-ring__circle transition-all duration-1000" id="score-ring" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="70" cx="80" cy="80" />
-                        </svg>
-                        <div class="absolute flex flex-col items-center justify-center">
-                            <span class="text-5xl font-bold tracking-tight text-white leading-none font-mono" id="score-number">0</span>
-                            <span class="text-[10px] text-zinc-500 font-semibold tracking-wider uppercase mt-1">Trust Rating</span>
+                    <!-- Scoring Box (Minimal Editorial Text Ratio) -->
+                    <div class="w-full md:w-1/3 flex flex-col items-center justify-center border border-charcoal/10 rounded p-6 bg-linen/40 text-center min-h-[180px]">
+                        <span class="text-[10px] font-semibold uppercase text-charcoal/40 tracking-wider mb-2 select-none">Credence Score</span>
+                        <div class="flex items-baseline justify-center">
+                            <span class="text-6xl font-serif font-bold text-charcoal" id="score-val">0</span>
+                            <span class="text-sm font-semibold text-charcoal/40 ml-1">/100</span>
                         </div>
+                        <span class="text-[10px] font-bold tracking-widest uppercase border border-charcoal/10 px-2.5 py-0.5 rounded mt-4" id="tier-badge">--</span>
                     </div>
 
-                    <span class="text-xs font-semibold" id="score-label">--</span>
-                </div>
-
-                <!-- BENTO CARD 2: GSTR-3B Filings (Smooth Timeline Tracker) -->
-                <div class="glow-card rounded-3xl p-6.5 col-span-1 md:col-span-2 flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="space-y-0.5">
-                            <span class="text-xs font-semibold text-zinc-500 tracking-wider uppercase select-none">Statutory Health (GSTN)</span>
-                            <h3 class="text-lg font-bold text-white tracking-tight">GSTR-3B Tax Compliance</h3>
+                    <!-- Direct Credit Advisory Paragraph -->
+                    <div class="w-full md:w-2/3 space-y-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full" id="indicator-dot"></span>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-charcoal/50 select-none">Official Credit Recommendation</span>
                         </div>
-                        <span id="gst-filing-fraction" class="text-sm font-semibold font-mono bg-white/[0.04] px-3 py-1 rounded-full border border-white/[0.06] text-white">
+                        <blockquote class="font-serif text-xl sm:text-2xl font-light italic text-charcoal leading-relaxed border-l-2 border-charcoal/20 pl-4 py-1" id="report-advisory">
                             --
-                        </span>
+                        </blockquote>
                     </div>
 
-                    <!-- Glowing compliance blocks representing last 6 months -->
-                    <div class="space-y-5 my-3">
-                        <div class="grid grid-cols-6 gap-2.5" id="filing-timeline-grid">
-                            <!-- Injected dynamically -->
-                        </div>
-                        <div class="flex items-center justify-between text-[11px] text-zinc-500 font-mono select-none px-0.5">
-                            <span>6 Months Ago</span>
-                            <span>Latest Filing</span>
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="grid grid-cols-2 gap-4 border-t border-white/[0.06] pt-4.5 mt-2">
-                        <div class="space-y-0.5">
-                            <span class="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider block">Registration Age</span>
-                            <span class="text-sm font-semibold text-white" id="report-vintage">--</span>
-                        </div>
-                        <div class="space-y-0.5">
-                            <span class="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider block">Tax Structure</span>
-                            <span class="text-sm font-semibold text-white truncate block" id="report-entity-type">--</span>
-                        </div>
+                <!-- Detailled Audited Indices Table -->
+                <div class="space-y-4">
+                    <span class="text-[10px] font-semibold text-charcoal/40 tracking-widest uppercase block">Compliance Audited Indicators</span>
+                    
+                    <div class="border border-charcoal/10 rounded overflow-hidden">
+                        <table class="w-full text-left text-xs divide-y divide-charcoal/10">
+                            <thead class="bg-linen/50 text-[10px] uppercase font-bold tracking-wider text-charcoal/60">
+                                <tr>
+                                    <th class="px-5 py-3">Audited Index</th>
+                                    <th class="px-5 py-3">Audit Finding</th>
+                                    <th class="px-5 py-3 text-right">Filing Integrity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-charcoal/10 bg-bone">
+                                
+                                <!-- GST Filing Compliance -->
+                                <tr>
+                                    <td class="px-5 py-4 font-semibold text-charcoal">
+                                        GSTR-3B Tax Filings
+                                    </td>
+                                    <td class="px-5 py-4 text-charcoal/70" id="gst-timeline-text">
+                                        Checking statutory timeline consistency...
+                                    </td>
+                                    <td class="px-5 py-4 text-right font-mono font-bold" id="gst-filing-fraction">
+                                        --
+                                    </td>
+                                </tr>
+
+                                <!-- Section 43B(h) MCA defaults -->
+                                <tr>
+                                    <td class="px-5 py-4 font-semibold text-charcoal">
+                                        MCA Sec 43B(h) Delay Audit
+                                    </td>
+                                    <td class="px-5 py-4 text-charcoal/70" id="mca-audit-text">
+                                        Analyzing Ministry of Corporate Affairs data...
+                                    </td>
+                                    <td class="px-5 py-4 text-right font-semibold" id="mca-filing-status">
+                                        --
+                                    </td>
+                                </tr>
+
+                                <!-- MSEFC Litigation Registry -->
+                                <tr>
+                                    <td class="px-5 py-4 font-semibold text-charcoal">
+                                        MSEFC Samadhaan Litigation
+                                    </td>
+                                    <td class="px-5 py-4 text-charcoal/70" id="samadhaan-audit-text">
+                                        Querying active litigation databases...
+                                    </td>
+                                    <td class="px-5 py-4 text-right font-semibold" id="samadhaan-filing-status">
+                                        --
+                                    </td>
+                                </tr>
+
+                                <!-- Additional Metadata -->
+                                <tr>
+                                    <td class="px-5 py-4 font-semibold text-charcoal">
+                                        Entity Registration & Vintage
+                                    </td>
+                                    <td class="px-5 py-4 text-charcoal/70" id="vintage-text">
+                                        Checking business vintage...
+                                    </td>
+                                    <td class="px-5 py-4 text-right text-charcoal/50" id="entity-structure-text">
+                                        --
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- BENTO CARD 3: Section 43B(h) MCA Audit (Payment Term Safeguard) -->
-                <div class="glow-card rounded-3xl p-6.5 col-span-1 md:col-span-2 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-zinc-500 tracking-wider uppercase select-none">Statutory Audit Check</span>
-                            <span id="mca-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border">
-                                --
-                            </span>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="text-lg font-bold text-white tracking-tight">MCA Sec 43B(h) Defaults</h3>
-                            <p class="text-zinc-400 text-xs font-light">
-                                Scrapes Ministry of Corporate Affairs Form MSME-1 declarations where corporate buyers flagged delayed payments exceeding 45 days.
-                            </p>
-                        </div>
+                <!-- Footnotes & Signature Block -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 border-t border-charcoal/10 pt-6 text-[10px] text-charcoal/40 font-light leading-relaxed">
+                    <div class="max-w-md">
+                        <p>Disclaimer: This certificate evaluates trade credit parameters based exclusively on public statutory ledger indices compiled from GSTN filings, MCA MSME disclosures, and the MSEFC Samadhaan council databases. It serves as an advisory and does not constitute formal banking guarantee lines.</p>
                     </div>
-
-                    <div class="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4.5 mt-5" id="mca-content-block">
-                        <!-- Injected dynamically -->
-                    </div>
-                </div>
-
-                <!-- BENTO CARD 4: MSEFC Dispute Tracker (Samadhaan Litigation Scraper) -->
-                <div class="glow-card rounded-3xl p-6.5 col-span-1 flex flex-col justify-between">
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-zinc-500 tracking-wider uppercase select-none">Litigation Registry</span>
-                            <span id="samadhaan-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border">
-                                --
-                            </span>
-                        </div>
-                        <div class="space-y-1">
-                            <h3 class="text-lg font-bold text-white tracking-tight">MSEFC Litigation</h3>
-                            <p class="text-zinc-400 text-xs font-light">
-                                Scrapes active legal disputes and default proceedings pending in the Micro & Small Enterprises Facilitation Council.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4.5 mt-5" id="samadhaan-content-block">
-                        <!-- Injected dynamically -->
-                    </div>
-                </div>
-
-                <!-- BENTO CARD 5: Executive Synthesis & Credit Recommendation (Full Width Glow) -->
-                <div class="col-span-1 md:col-span-3 rounded-3xl p-0.5 relative overflow-hidden group">
-                    <!-- Subtle glowing border effect -->
-                    <div class="absolute -inset-1 bg-gradient-to-r from-appleBlue to-indigo-500 rounded-3xl blur opacity-10 group-hover:opacity-25 transition duration-500"></div>
-                    <div class="relative bg-obsidian border border-white/[0.08] rounded-3xl p-6.5 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                        <div class="space-y-2">
-                            <div class="flex items-center gap-2">
-                                <span class="flex h-2 w-2 relative">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" id="pulse-dot"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2" id="static-dot"></span>
-                                </span>
-                                <span class="text-xs font-semibold tracking-wider uppercase text-zinc-400 select-none">Credit Recommendation</span>
-                            </div>
-                            <p class="text-white text-base sm:text-lg font-medium leading-snug max-w-3xl" id="report-recommendation">
-                                --
-                            </p>
-                        </div>
-                        <div class="flex-shrink-0 flex items-center gap-2.5 bg-white/[0.03] border border-white/[0.05] p-3 rounded-2xl font-mono text-[10.5px] text-zinc-500 select-none">
-                            <span>SEC: 43B(H) OK</span>
-                            <span>•</span>
-                            <span>MSEFC: CLEAR</span>
-                            <span>•</span>
-                            <span>GSTN: 6/6</span>
-                        </div>
+                    <div class="text-right sm:text-right select-none font-serif italic text-charcoal/75 text-sm">
+                        <span>Credence Advisory Board</span>
                     </div>
                 </div>
 
@@ -378,31 +304,20 @@
 
     </main>
 
-    <!-- Aesthetic Minimal Footer -->
-    <footer class="border-t border-white/[0.04] px-6 sm:px-12 py-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 z-10 bg-void text-xs text-zinc-600 select-none">
-        <p>© 2026 Credence Risk Intelligence. Engineered for Voyager.</p>
-        <div class="flex items-center gap-4.5">
-            <a href="#" class="hover:text-zinc-400 transition-colors">Privacy Charter</a>
+    <!-- Aesthetic Footnote Footer -->
+    <footer class="max-w-4xl mx-auto w-full border-t border-charcoal/10 mt-12 py-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] text-charcoal/40 select-none">
+        <p>© 2026 Credence Advisory Ledger. Voyager Sandbox.</p>
+        <div class="flex items-center gap-4">
+            <a href="#" class="hover:text-charcoal transition-colors">Privacy Principles</a>
             <span>•</span>
-            <a href="#" class="hover:text-zinc-400 transition-colors">Developer APIs</a>
+            <a href="#" class="hover:text-charcoal transition-colors">Audit Methods</a>
             <span>•</span>
-            <a href="#" class="hover:text-zinc-400 transition-colors">Regulatory Filings</a>
+            <a href="#" class="hover:text-charcoal transition-colors">Statutory Frameworks</a>
         </div>
     </footer>
 
-    <!-- INTERACTIVE SCRIPTING -->
+    <!-- INTERACTIVE AUDIT BEHAVIORS -->
     <script>
-        // Set today's date formatted perfectly
-        const formattedDate = new Date().toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            year: 'numeric', 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: true
-        });
-        document.getElementById('report-date').innerText = `Scraped ${formattedDate}`;
-
         function handleEnter(e) {
             if(e.key === 'Enter') {
                 triggerAnalysisFromInput();
@@ -419,9 +334,8 @@
         function showDashboard() {
             document.getElementById('dashboard-search').value = '';
             
-            // Outward animations
             const reportEl = document.getElementById('report-view');
-            reportEl.classList.add('opacity-0', 'translate-y-4');
+            reportEl.classList.add('opacity-0');
             
             setTimeout(() => {
                 reportEl.classList.add('hidden');
@@ -434,20 +348,19 @@
             const gstin = gstinInput.trim().toUpperCase();
             
             if(gstin.length !== 15) {
-                alert("Please enter a valid 15-character Indian GSTIN.");
+                alert("Please enter a valid 15-character statutory GSTIN.");
                 return;
             }
 
-            // Lock dashboard input
             document.getElementById('dashboard-search').value = gstin;
             
-            // Slide/Fade Transitions
+            // Seamless layout fades
             document.getElementById('dashboard-view').classList.add('hidden');
             document.getElementById('report-view').classList.add('hidden');
             document.getElementById('loader-view').classList.remove('hidden');
             
-            // Simulating parallel scraper / ledger extraction threads (Apple loader timing)
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Clean mechanical delay to evaluate index registries
+            await new Promise(resolve => setTimeout(resolve, 1400));
 
             const gstData = await mockFetchGSTIN(gstin);
             const mcaData = await mockFetchMCA(gstin, gstData.entityType);
@@ -457,37 +370,35 @@
             
             renderResults(gstin, gstData, mcaData, samadhaanData, analysis);
             
-            // Fade-in report elegantly
+            // Reveal report beautifully
             document.getElementById('loader-view').classList.add('hidden');
             const reportEl = document.getElementById('report-view');
             reportEl.classList.remove('hidden');
             
-            // Trigger animation frame for CSS transitions
             requestAnimationFrame(() => {
-                reportEl.classList.remove('opacity-0', 'translate-y-4');
+                reportEl.classList.remove('opacity-0');
             });
             
-            // Reset viewport scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function calculateScore(gst, mca, sam) {
             let score = 100;
-            let action = "Standard Net-30 or Net-45 trade credit terms approved. Zero critical indicators detected.";
+            let action = "Standard Net-30 or Net-45 credit terms approved. Statutory filings and dispute registries are clear.";
 
             if (gst.status !== "Active") {
                 return { 
                     score: 0, 
-                    tier: "High Risk", 
+                    tier: "HIGH RISK (CLASS C)", 
                     theme: "rose", 
-                    action: "Immediate Credit Blockage: Entity status is suspended or inactive on GSTN. Input Tax Credit (ITC) flow ineligible." 
+                    action: "Immediate credit blockage. Entity status suspended or inactive on statutory registries." 
                 };
             }
 
             const missedFilings = 6 - gst.gstr3bLast6Months;
             if (missedFilings > 0) {
                 score -= (missedFilings * 15);
-                action = "Cash advance mandated. Recurrent lapses in statutory GSTR-3B filings signal major liquidity compression.";
+                action = "Cash advance required. Frequent delays in monthly tax filing compliance represent acute liquidity constraints.";
             }
 
             if (gst.vintageMonths < 12) {
@@ -496,31 +407,30 @@
 
             if (mca.applicable && mca.defaultsFound > 0) {
                 score -= 30;
-                action = "Credit Denied: Multiple active trade debt defaults reported to MCA under Section 43B(h). Critical liquidity warning.";
+                action = "Credit denied. Statutory defaults reported under Section 43B(h). Significant corporate supplier exposure flagged.";
             }
 
             if (sam.activeCases > 0) {
                 score -= 40;
-                action = "Credit Blocked: Multiple unpaid dispute filings actively pending in the Micro & Small Enterprises Facilitation Council.";
+                action = "Immediate credit blockage. Multiple unresolved default and recovery proceedings currently pending in MSEFC arbitration.";
             }
 
             score = Math.max(0, score);
 
-            if (score >= 80) return { score, tier: "Prime", theme: "emerald", action: "Standard Net-30 or Net-45 credit lines recommended. Clean statutory and litigation audit." };
-            if (score >= 50) return { score, tier: "Sub-Prime", theme: "amber", action: "Restrict credit limits. Net-15 maximum, backed by personal director guarantees or 50% upfront ledger advance." };
-            return { score, tier: "High Risk", theme: "rose", action };
+            if (score >= 80) return { score, tier: "PRIME (CLASS A)", theme: "emerald", action: "Standard Net-30 or Net-45 trade credit terms approved. Clean statutory and dispute registries audited." };
+            if (score >= 50) return { score, tier: "SUB-PRIME (CLASS B)", theme: "amber", action: "Limit credit lines. Restrict terms to Net-15 maximum, supported by personal director declarations." };
+            return { score, tier: "HIGH RISK (CLASS C)", theme: "rose", action };
         }
 
-        // Mock Datasets with precise ledger information
+        // Mock Audited Databases
         async function mockFetchGSTIN(gstin) {
             if(gstin === '07AABCU9603R1ZM') return { name: 'Apex Auto Components Pvt. Ltd.', status: 'Active', entityType: 'Private Limited Company', gstr3bLast6Months: 6, vintageMonths: 60 };
             if(gstin === '27BBMPS5678B1ZA') return { name: 'Rahul Metals & Stampings', status: 'Active', entityType: 'Proprietorship', gstr3bLast6Months: 4, vintageMonths: 24 };
             if(gstin === '06DELPR1234A1Z5') return { name: 'Global Fasteners & Polymers', status: 'Suspended', entityType: 'Proprietorship', gstr3bLast6Months: 1, vintageMonths: 8 };
             
-            // Standard fallback generator
             const isCompany = gstin.charAt(5) === 'C'; 
             return { 
-                name: 'Unknown Auto Supplier ' + gstin.substring(0, 4), 
+                name: 'Unknown Supplier ' + gstin.substring(0, 4), 
                 status: 'Active', 
                 entityType: isCompany ? 'Private Limited Company' : 'Proprietorship', 
                 gstr3bLast6Months: 6, 
@@ -540,183 +450,83 @@
         }
 
         function renderResults(gstin, gst, mca, sam, analysis) {
-            // Apply theme stylings elegantly
-            const themes = {
-                emerald: { 
-                    border: "border-emerald-500/20", 
-                    text: "text-emerald-400", 
-                    bg: "bg-emerald-500/10",
-                    glow: "rgba(16, 185, 129, 0.4)",
-                    colorCode: "#10b981"
-                },
-                amber: { 
-                    border: "border-amber-500/20", 
-                    text: "text-amber-400", 
-                    bg: "bg-amber-500/10",
-                    glow: "rgba(245, 158, 11, 0.4)",
-                    colorCode: "#f59e0b"
-                },
-                rose: { 
-                    border: "border-rose-500/20", 
-                    text: "text-rose-400", 
-                    bg: "bg-rose-500/10",
-                    glow: "rgba(239, 68, 68, 0.4)",
-                    colorCode: "#ef4444"
-                },
-            };
-            const th = themes[analysis.theme];
+            // Setup dynamic serial number based on GSTIN hash
+            let hashVal = 0;
+            for (let i = 0; i < gstin.length; i++) { hashVal += gstin.charCodeAt(i); }
+            document.getElementById('advisory-serial').innerText = `Serial: CR-2026-${(hashVal % 9000) + 1000}`;
 
-            // Render Header Information
+            // Theme indicator color mappings
+            const indicators = {
+                emerald: { dot: 'bg-sage', text: 'text-sage', border: 'border-sage/20', bg: 'bg-sage/5' },
+                amber: { dot: 'bg-ochre', text: 'text-ochre', border: 'border-ochre/20', bg: 'bg-ochre/5' },
+                rose: { dot: 'bg-crimson', text: 'text-crimson', border: 'border-crimson/20', bg: 'bg-crimson/5' }
+            };
+            const ind = indicators[analysis.theme];
+
+            // Render Header & Date
             document.getElementById('company-name').innerText = gst.name;
             document.getElementById('report-gstin').innerText = gstin;
             
-            const badgeTier = document.getElementById('badge-tier');
-            badgeTier.innerText = analysis.tier;
-            badgeTier.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase border ${th.bg} ${th.text} ${th.border} tracking-wide shadow-[0_0_10px_${th.glow}]`;
+            const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            document.getElementById('report-date').innerText = `Audited: ${today}`;
 
-            // Render Score SVG Gauge Animation
-            const circle = document.getElementById('score-ring');
-            const radius = circle.r.baseVal.value;
-            const circumference = radius * 2 * Math.PI;
+            // Score Rendering
+            document.getElementById('score-val').innerText = analysis.score;
+            document.getElementById('score-val').className = `text-6xl font-serif font-bold ${ind.text}`;
             
-            circle.style.strokeDasharray = `${circumference} ${circumference}`;
-            
-            // Set final colored stroke
-            circle.style.stroke = th.colorCode;
-            
-            // Animate stroke offset
-            const offset = circumference - (analysis.score / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-            
-            // Animate central score counter
-            animateScoreCounter(analysis.score);
-            document.getElementById('score-label').innerText = `${analysis.tier} Trust Grade`;
-            document.getElementById('score-label').className = `text-xs font-semibold tracking-wide uppercase ${th.text}`;
+            const tierBadge = document.getElementById('tier-badge');
+            tierBadge.innerText = analysis.tier;
+            tierBadge.className = `text-[10px] font-bold tracking-widest uppercase border px-2.5 py-0.5 rounded mt-4 ${ind.text} ${ind.bg} ${ind.border}`;
 
-            // Render Statutory Health Blocks (GST)
-            document.getElementById('gst-filing-fraction').innerText = `${gst.gstr3bLast6Months} / 6 Filings`;
-            document.getElementById('gst-filing-fraction').className = `text-xs font-semibold font-mono bg-white/[0.04] px-3 py-1 rounded-full border border-white/[0.06] ${th.text}`;
+            // Recommendation Text
+            document.getElementById('report-advisory').innerText = `“${analysis.action}”`;
+            document.getElementById('indicator-dot').className = `w-2.5 h-2.5 rounded-full ${ind.dot}`;
+
+            // Audited Indices Table Rows
+            // row 1: GST
+            document.getElementById('gst-filing-fraction').innerText = `${gst.gstr3bLast6Months} / 6`;
+            document.getElementById('gst-filing-fraction').className = `px-5 py-4 text-right font-mono font-bold ${gst.gstr3bLast6Months === 6 ? 'text-sage' : 'text-crimson'}`;
             
-            const timelineGrid = document.getElementById('filing-timeline-grid');
-            timelineGrid.innerHTML = '';
-            for (let i = 1; i <= 6; i++) {
-                const isActive = i <= gst.gstr3bLast6Months;
-                const block = document.createElement('div');
-                block.className = `h-9 rounded-lg transition-all duration-500 ${
-                    isActive 
-                    ? 'bg-emerald-500/20 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.15)]' 
-                    : 'bg-white/[0.02] border border-white/[0.04]'
-                } flex items-center justify-center text-[10px] font-semibold font-mono ${isActive ? 'text-emerald-400' : 'text-zinc-600'}`;
-                block.innerText = `M${i}`;
-                timelineGrid.appendChild(block);
+            if (gst.gstr3bLast6Months === 6) {
+                document.getElementById('gst-timeline-text').innerText = `Filings verified. Excellent compliance of 6/6 monthly returns filed on schedule.`;
+            } else {
+                document.getElementById('gst-timeline-text').innerText = `Compliance deficiency flagged. Supplier missed ${6 - gst.gstr3bLast6Months} GSTR-3B filings within the last 6 months.`;
             }
 
-            document.getElementById('report-vintage').innerText = `${Math.floor(gst.vintageMonths/12)} Years, ${gst.vintageMonths%12} Months`;
-            document.getElementById('report-entity-type').innerText = gst.entityType;
-
-            // Render Section 43B(h) Audit
-            const mcaBadge = document.getElementById('mca-badge');
-            const mcaContent = document.getElementById('mca-content-block');
+            // row 2: MCA
+            const mcaStatusEl = document.getElementById('mca-filing-status');
+            const mcaTextEl = document.getElementById('mca-audit-text');
             if (!mca.applicable) {
-                mcaBadge.innerText = "Exempt";
-                mcaBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border bg-white/[0.03] text-zinc-400 border-white/[0.06]";
-                mcaContent.innerHTML = `<div class="flex items-start gap-3">
-                    <div class="p-2 bg-white/[0.03] border border-white/[0.06] rounded-xl text-zinc-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-zinc-300">Statutory Compliance Exemption</p>
-                        <p class="text-[11px] text-zinc-500 mt-1 font-light">Supplier is registered as an unincorporated entity (${gst.entityType}). MCA-mandated MSME due disclosures are not statutory requirements.</p>
-                    </div>
-                </div>`;
+                mcaStatusEl.innerText = "EXEMPT";
+                mcaStatusEl.className = "px-5 py-4 text-right font-semibold text-charcoal/40";
+                mcaTextEl.innerText = `Supplier operates under an unincorporated structure (${gst.entityType}). Not subject to corporate MSME filing mandates.`;
             } else if (mca.defaultsFound === 0) {
-                mcaBadge.innerText = "Audit Clear";
-                mcaBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-                mcaContent.innerHTML = `<div class="flex items-start gap-3">
-                    <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-emerald-400">Compliance Audit: Passed</p>
-                        <p class="text-[11px] text-zinc-500 mt-1 font-light">Zero trade debts or payment defaults have been registered or declared under Ministry of Corporate Affairs Form MSME-1.</p>
-                    </div>
-                </div>`;
+                mcaStatusEl.innerText = "PASSED";
+                mcaStatusEl.className = "px-5 py-4 text-right font-semibold text-sage";
+                mcaTextEl.innerText = `Clean audit record. No trade credit defaults found under Section 43B(h) MCA MSME filings.`;
             } else {
-                mcaBadge.innerText = `${mca.defaultsFound} Defaults`;
-                mcaBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border bg-rose-500/10 text-rose-400 border-rose-500/20";
-                mcaContent.innerHTML = `<div class="flex items-start gap-3">
-                    <div class="p-2 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 shadow-[0_0_10px_rgba(239,68,68,0.15)]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-rose-400">Statutory Trade Defaults Identified</p>
-                        <p class="text-[11px] text-zinc-400 mt-1 font-light">Cumulative corporate exposure reported: <span class="text-white font-mono font-semibold">₹${mca.totalOwed.toLocaleString()}</span></p>
-                        <p class="text-[10px] text-zinc-500 mt-1.5 leading-relaxed font-light">Entity is flagged for systemic delayed payments beyond 45 days, causing severe credit vulnerability.</p>
-                    </div>
-                </div>`;
+                mcaStatusEl.innerText = `FLAGGED (${mca.defaultsFound})`;
+                mcaStatusEl.className = "px-5 py-4 text-right font-semibold text-crimson";
+                mcaTextEl.innerHTML = `Exposure flagged. Supplier has declared <span class="font-mono font-bold">₹${mca.totalOwed.toLocaleString()}</span> in unresolved trade debts exceeding 45 days.`;
             }
 
-            // Render MSEFC Samadhaan Dispute Scrapes
-            const samBadge = document.getElementById('samadhaan-badge');
-            const samContent = document.getElementById('samadhaan-content-block');
+            // row 3: Samadhaan
+            const samStatusEl = document.getElementById('samadhaan-filing-status');
+            const samTextEl = document.getElementById('samadhaan-audit-text');
             if (sam.activeCases === 0) {
-                samBadge.innerText = "Clear";
-                samBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-                samContent.innerHTML = `<div class="flex items-start gap-3">
-                    <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.15)]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-emerald-400">MSEFC Faciliatation Status: Clear</p>
-                        <p class="text-[11px] text-zinc-500 mt-1 font-light font-sans">Zero registered arbitration defaults, disputes, or recovery proceedings found on the MSME Samadhaan database.</p>
-                    </div>
-                </div>`;
+                samStatusEl.innerText = "CLEAR";
+                samStatusEl.className = "px-5 py-4 text-right font-semibold text-sage";
+                samTextEl.innerText = `No active arbitration or recovery proceedings found pending on the MSEFC Samadhaan portal.`;
             } else {
-                samBadge.innerText = `${sam.activeCases} Disputes`;
-                samBadge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border bg-rose-500/10 text-rose-400 border-rose-500/20";
-                samContent.innerHTML = `<div class="flex items-start gap-3">
-                    <div class="p-2 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 shadow-[0_0_10px_rgba(239,68,68,0.15)]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-xs font-semibold text-rose-400">Active MSEFC Litigation Detected</p>
-                        <p class="text-[11px] text-zinc-400 mt-1 font-light">Disputed litigation volume: <span class="text-white font-mono font-semibold">₹${sam.claimAmount.toLocaleString()}</span></p>
-                        <p class="text-[10px] text-zinc-500 mt-1.5 leading-relaxed font-light">Last filed: ${sam.lastCaseDate}. Supplier is dragging buyers into formal judicial arbitration councils for unpaid receivables.</p>
-                    </div>
-                </div>`;
+                samStatusEl.innerText = `LITIGATION (${sam.activeCases})`;
+                samStatusEl.className = "px-5 py-4 text-right font-semibold text-crimson";
+                samTextEl.innerHTML = `Arbitration active. Disputes found in facilitation council: <span class="font-mono font-bold">₹${sam.claimAmount.toLocaleString()}</span> (Filed: ${sam.lastCaseDate}).`;
             }
 
-            // Render Final Executive Recommendation
-            document.getElementById('report-recommendation').innerText = analysis.action;
-            
-            // Dynamic pulse dots for recommendation block
-            const pulseDot = document.getElementById('pulse-dot');
-            const staticDot = document.getElementById('static-dot');
-            
-            pulseDot.className = `animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                analysis.theme === 'emerald' ? 'bg-emerald-400' : analysis.theme === 'amber' ? 'bg-amber-400' : 'bg-rose-400'
-            }`;
-            staticDot.className = `relative inline-flex rounded-full h-2 w-2 ${
-                analysis.theme === 'emerald' ? 'bg-emerald-500' : analysis.theme === 'amber' ? 'bg-amber-500' : 'bg-rose-500'
-            }`;
-        }
-
-        function animateScoreCounter(targetScore) {
-            const el = document.getElementById('score-number');
-            let current = 0;
-            const duration = 1000; // ms
-            const interval = 16; // ms (~60fps)
-            const increment = targetScore / (duration / interval);
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= targetScore) {
-                    el.innerText = Math.round(targetScore);
-                    clearInterval(timer);
-                } else {
-                    el.innerText = Math.round(current);
-                }
-            }, interval);
+            // row 4: Metadata
+            document.getElementById('vintage-text').innerText = `${Math.floor(gst.vintageMonths/12)} Years, ${gst.vintageMonths%12} Months history. Registered structure of: ${gst.entityType}.`;
+            document.getElementById('entity-structure-text').innerText = gst.entityType.split(' ')[0].toUpperCase();
+            document.getElementById('entity-structure-text').className = "px-5 py-4 text-right text-charcoal/50 font-mono";
         }
     </script>
 </body>
